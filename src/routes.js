@@ -1,5 +1,5 @@
-
-import App from './App'
+import InitialPage from './pages/initialPage'
+import Main from './pages/main/'
 
 
 import React from 'react'
@@ -8,8 +8,10 @@ import {Route, BrowserRouter} from 'react-router-dom'
 const Routes = () =>{
     return(
         <BrowserRouter>
-            <Route component={App} path ="/token:/:d" exact/>
-           <Route component={App} path ="/"/>
+            
+           <Route component={InitialPage} exact path ="/"/>
+           <Route component={Main} path ="/token/:d" />
+           
             
         </BrowserRouter>
     )
