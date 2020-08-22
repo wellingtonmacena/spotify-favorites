@@ -1,8 +1,15 @@
 body{
     font-family: 'Noto Sans JP', sans-serif;
     background-color: #197C43;
+    
     color: white;
 }
+*{
+    list-style-type: none;
+    text-decoration: none;
+    
+}
+
 
 #container{
     display: grid;
@@ -11,34 +18,38 @@ body{
 
 #title{
     justify-self: center;
+    font-size: 4vw;
+    font-weight: bold;
+    margin-top: 2vh;
+    margin-bottom: 3vh;
 }
 
 #subtitle{
     justify-self: center;
-    font-size: 4vh;
+    font-size: 2.5vw;
 }
 
 #container-block{
+   
     display: grid;
     grid-template-columns: 3fr 3fr 3.2fr 3fr 3fr;
     justify-content: space-between;
     color: white;
-    background-color: #359A41;
-    
+    background-color: #359A41;   
     list-style-type: none;
-  margin: 0;
-  padding: 0;
-    
-    
+    margin: 0;
+    padding: 0;
+       
 }
 
 #block{
-    width: 38vh;
-    height: 13vh;
+    word-wrap: break-word;
+    width: 16vw;
+    height: 8vw;
+    font-size: 1.7vw;
     background-color: #359A41;
     vertical-align: middle;
-    cursor: pointer;
-    
+    cursor: pointer;   
 } 
 
 #block:hover {
@@ -47,4 +58,85 @@ body{
 
 #block:active{
     box-shadow: 5px 10px #888888;
+}
+
+#container_results{
+    max-width: 820px;
+   
+}
+#artistInput{
+margin-top: 5vw;
+}
+
+
+#userTopSongs{
+    margin-top: 10vh;
+    display: grid;
+    grid-template-columns: 2.5fr 2.5fr  2.5fr ;
+    justify-items: center;
+    
+}
+#userTopSongs li {   
+    margin-bottom: 5vw;   
+}
+
+#userTopSongs img {
+    width: 20vw;
+     
+}
+#userTopSongs div{
+    display: grid;
+    justify-content: center;   
+}
+#userTopSongs div p {
+    font-size: 1.55vw;  
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 20%;
+    justify-self: center;
+    
+}
+#userTopSongs div span {
+    font-size: 1.75vw;  
+    color: white;
+    max-width: 20vw;
+    word-wrap: break-word; 
+    justify-self: center;
+}
+
+
+
+#userTopArtists{
+    margin-top: 10vh;
+    display: grid;
+    grid-template-columns: 2.5fr 2.5fr  2.5fr ;
+    justify-items: center;
+    
+}
+
+#userTopArtists li {   
+    margin-bottom: 5vw;   
+}
+
+#userTopArtists img {
+    width: 20vw;
+     
+}
+#userTopArtists div{
+    display: grid;
+    justify-content: center;   
+}
+
+#userTopArtists div span {
+    font-size: 1.8vw;  
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 20%;
+    justify-self: center;
+    max-width: 20vw;
+    margin-top: 1vw;
+    
+}
+
+
+#artistTopTracks img{
+    width: 20vw;
 }
