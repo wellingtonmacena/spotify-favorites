@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../main/index.css'
-
+import { Chart } from 'chart.js'
 export default function Main(props) {
 
     let [token, setToken] = useState("");
@@ -15,13 +15,24 @@ export default function Main(props) {
     let [artistTopTracks, setArtistTopTracks] = useState([])
 
     let genres = []
+    let mostGenres = []
     let [artistInfo, newArtistInfo] = useState([])
+
+    let [firstData, setfirstData] = useState([]);
+    let [secondData, setSecondData] = useState([])
+    let [thirdData, setThirdData] = useState([])
+    let [forthData, setForthData] = useState([]);
+    let [fifthData, setFifthData] = useState([]);
 
     useEffect(() => {
         const query = props.location.pathname
         const token = query.split('/')[2];
         setToken(token)
     }, [props.location.pathname])
+
+    useEffect(() => {
+
+    }, [firstData ])
 
     const data = {
         headers: {
@@ -35,20 +46,19 @@ export default function Main(props) {
         showDiv("artistTopTracks")
 
         let response = await axios.get(`https://api.spotify.com/v1/search?q=${nameArtistSearch}&type=artist&limit=2`, data)
-        
-        
-        var r =response.data.artists.items[0].images[0].url
-        console.log(r)
+
+        var r = response.data.artists.items[0].images[0].url
         newArtistInfo([r])
 
         let artistId = response.data.artists.items[0].id
         let url = `https://api.spotify.com/v1/artists/${artistId}/top-tracks?country=BR`
         response = await axios.get(url, data)
         setArtistTopTracks(response.data.tracks)
-    
+
     }
 
     function getUserMostArtists() {
+
         hideAllDivs()
         showDiv("userTopArtists")
         axios.get(`https://api.spotify.com/v1/me/top/artists?time_range=${timeRange}&limit=${limitNumber}&offset=${offset}`, data)
@@ -69,7 +79,7 @@ export default function Main(props) {
     }
 
     function hideAllDivs() {
-        let divsIds = ["userTopArtists", "artistTopTracks", "userTopSongs"]
+        let divsIds = ["userTopArtists", "artistTopTracks", "userTopSongs", "myChart"]
         divsIds.map(div => {
             document.getElementById(div).style.display = "none"
         })
@@ -79,6 +89,113 @@ export default function Main(props) {
         document.getElementById(id).style.display = "grid"
     }
 
+    function gopush() {
+        var mf = 1;
+        var m = 0;
+        var item;
+        for (var i = 0; i < mostGenres.length; i++) {
+            for (var j = i; j < mostGenres.length; j++) {
+                if (mostGenres[i] == mostGenres[j])
+                    m++;
+                if (mf < m) {
+                    mf = m;
+                    item = mostGenres[i];
+                }
+            }
+            m = 0;
+        }
+
+        var indexToRemove = []
+        for (let elem of mostGenres) {
+            if (elem === item) {
+                indexToRemove.push(indexToRemove.indexOf(elem))
+            }
+        }
+        for (var index = 0; index < mostGenres.length; index++) {
+
+            if (mostGenres[index] === item) {
+                delete mostGenres[index]
+            }
+        }
+        mostGenres = mostGenres.filter(item => item !== undefined)
+        return [item, mf]
+    }
+
+    function capitalizeString(string) {
+        var word = ""
+        for (var index = 0; index < string.length; index++) {
+            if (index == 0) {
+                word += string[0].toUpperCase()
+
+            }
+            else {
+                word += string[index]
+            }
+        }
+        return word
+    }
+
+
+    function findMostListenedGenre() {
+        hideAllDivs()
+        var dataChart = {}
+        genres.map(item => item.map(ele => mostGenres.push(ele)))
+        console.log(mostGenres)
+
+        if (genres.length > 0) {
+            document.getElementById("myChart").style.display = "none"
+            showDiv("myChart")
+            var backGroundColors = ['rgba(252, 98, 98)', 'rgba(255, 201, 54)', 'rgba(235, 255, 54)',
+                'rgba(165, 255, 54)', 'rgba(206, 237, 168)']
+
+             setfirstData([gopush()[0], gopush()[1]]);
+             console.log(firstData)
+             console.log(firstData[1])
+             setSecondData(gopush());
+             setThirdData(gopush());
+             setForthData(gopush());
+             setFifthData(gopush());
+            
+           
+          
+
+                // These labels appear in the legend and in the tooltips when hovering different arcs
+                   // capitalizeString(firstData[0]),
+                    // capitalizeString(secondData[0]),
+                    // capitalizeString(thirdData[0]),
+                    // capitalizeString(forthData[0]),
+                    // capitalizeString(fifthData[0]),
+                
+        
+            sendChart(dataChart)
+
+
+            genres = []
+            mostGenres = []
+        }
+    }
+
+
+    function sendChart(dataChart) {
+
+        var myChart = new Chart("myChart", {
+            data: dataChart,
+            type: 'bar',
+            options: {
+                title: {
+                    display: true,
+                    text: 'Generos mais ouvidos',
+                    fontColor: "#fff"
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: 'rgb(155, 242, 174)'
+                    }
+                }
+            }
+        });
+    }
 
     return (
 
@@ -92,7 +209,7 @@ export default function Main(props) {
                 <li id="block" onClick={() => getUserMostPlayedSongs()} >Suas musicas mais tocadas</li>
                 <li id="block" onClick={() => getUserMostArtists()} >Seus artistas mais ouvidos</li>
                 <li id="block" onClick={() => getArtistTopTracks()}>As <i>top tracks</i> de algum artista</li>
-                <li id="block" >Os gêneros que você mais ouve</li>
+                <li id="block" onClick={() => findMostListenedGenre()} >Os gêneros que você mais ouve</li>
                 <li id="block" >Suas recomendações semanais</li>
 
             </ul>
@@ -105,7 +222,7 @@ export default function Main(props) {
             <select id="timeRange"
                 value={timeRange}
                 onChange={e => setTimeRange(e.target.value)}>
-                
+
                 <option value="medium_term">Padrão (Medium Range)</option>
                 <option value="short_term"> Aprox. últimas 4 semanas</option>
                 <option value="medium_term">Aprox. últimos 6 meses</option>
@@ -149,11 +266,14 @@ export default function Main(props) {
 
                 <div id="userTopArtists">
                     {
+
+
                         userTopArtists.map(top => (
                             <li key={top.id}>
                                 <img src={top.images[0].url} alt="" />
 
                                 <div>
+
                                     <span>{genres.push(top.genres)}# {top.name}</span>
                                 </div>
                             </li>
@@ -164,18 +284,18 @@ export default function Main(props) {
 
                 <div id="artistTopTracks">
 
-                    
-                        {
-                            artistInfo.map(info =>(
-                                <div key={info}>
+
+                    {
+                        artistInfo.map(info => (
+                            <div key={info}>
                                 <a >
-                             
+
                                     <img src={info} alt="image" alt="artistPic" />
                                 </a>
                                 <span>{}</span>
-                            </div> 
-                            ))
-                        } 
+                            </div>
+                        ))
+                    }
 
                     {artistTopTracks.map(song => (
                         <li key={song.id}>
@@ -193,6 +313,9 @@ export default function Main(props) {
                     ))
                     }
                 </div>
+
+                <canvas id="myChart">
+                </canvas>
             </div>
         </div>
     );
